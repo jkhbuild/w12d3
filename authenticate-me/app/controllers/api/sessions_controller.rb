@@ -1,33 +1,35 @@
 # frozen_string_literal: true
 
 class Api::SessionsController < ApplicationController
-  def show
-    if current_user
+  before_action :require_logged_out, only: [:create]
+  before_action :require_logged_in, only: [:destroy]
+
+  def show 
       @user = current_user
-      render template: 'api/users/show'
-    else
-      render json: { user: nil }
-    end
+
+      if @user
+          render 'api/users/show'
+      else
+          render json: { user: nil }
+      end
   end
 
   def create
-    @user = User.find_by_credentials(
-      credential: params[:credential],
-      password: params[:password]
-    )
+      username = params[:credential]
+      password = params[:password]
+      # debugger
+      @user = User.find_by_credentials(username, password)
 
-    if @user
-      login!(@user)
-      render template: 'api/users/show'
-    else
-      render json: { errors: ['The provided credentials were invalid.'] }, status: :unauthorized
-    end
-  end
+      if @user
+          login(@user)
+          render 'api/users/show'
+      else
+          render json: { errors: ['Invalid Credentials'] }, status: 422
+      end
+  end 
 
   def destroy
-    return unless current_user
-
-    logout!
-    render json: { message: 'successs' }
+      logout
+      head :no_content # populate http response with no content => no body
   end
 end

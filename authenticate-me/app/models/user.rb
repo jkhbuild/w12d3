@@ -9,11 +9,18 @@ class User < ApplicationRecord
   validates :session_token, presence: true, uniqueness: true
   validates :password, length: { in: 6..255 }, allow_nil: true
 
-  def self.find_by_credentials(credential:, password:)
-    user = credential.match?(URI::MailTo::EMAIL_REGEXP) ? User.find_by(email: credential) : User.find_by(username: credential)
-    return nil if user.nil?
+  def self.find_by_credentials(username, password)
+    user = User.find_by(username: username)
 
-    user.authenticate(password) ? user : nil
+    if user&.authenticate(password) # user && user.authenticate(password)
+      return user
+    else
+      nil
+    end
+  end
+
+  def ensure_session_token
+    self.session_token ||= generate_unique_session_token
   end
 
   def reset_session_token!
@@ -25,13 +32,10 @@ class User < ApplicationRecord
   private
 
   def generate_unique_session_token
-    loop do
-      session_token = SecureRandom.urlsafe_base64(16)
-      return session_token unless User.exists?(session_token:)
+    while true
+      token = SecureRandom.urlsafe_base64
+      return token unless User.exists?(session_token: token)
     end
   end
 
-  def ensure_session_token
-    self.session_token ||= generate_unique_session_token
-  end
 end

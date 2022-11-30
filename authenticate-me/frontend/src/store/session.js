@@ -1,29 +1,29 @@
-import csrfFetch from './csrf';
+import csrfFetch from "./csrf";
 
-const SET_CURRENT_USER = 'session/setCurrentUser';
-const REMOVE_CURRENT_USER = 'session/removeCurrentUser';
+const SET_CURRENT_USER = "session/setCurrentUser";
+const REMOVE_CURRENT_USER = "session/removeCurrentUser";
 
 const setCurrentUser = (user) => {
   return {
     type: SET_CURRENT_USER,
-    payload: user
+    payload: user,
   };
 };
 
 const removeCurrentUser = () => {
   return {
-    type: REMOVE_CURRENT_USER
+    type: REMOVE_CURRENT_USER,
   };
 };
 
 export const login = (user) => async (dispatch) => {
   const { credential, password } = user;
-  const response = await csrfFetch('/api/session', {
-    method: 'POST',
+  const response = await csrfFetch("/api/session", {
+    method: "POST",
     body: JSON.stringify({
       credential,
-      password
-    })
+      password,
+    }),
   });
   const data = await response.json();
   dispatch(setCurrentUser(data.user));
