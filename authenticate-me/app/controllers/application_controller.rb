@@ -11,13 +11,6 @@ class ApplicationController < ActionController::API
   before_action :attach_authenticity_token
 
   # For testing authentication
-  def test
-    if params.key?(:login)
-      login!(User.first)
-    elsif params.key?(:logout)
-      logout!
-    end
-
     if current_user
       render json: { user: current_user.slice('email', 'username', 'session_token') }
     else
