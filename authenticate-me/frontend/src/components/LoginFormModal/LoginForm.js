@@ -12,6 +12,7 @@ function LoginForm() {
     const [errors, setErrors] = useState([]);
 
     const handleSubmit = (e) => {
+        debugger
         e.preventDefault();
         setErrors([]);
         return dispatch(sessionActions.login({ credential, password }))

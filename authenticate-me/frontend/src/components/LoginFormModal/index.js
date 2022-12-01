@@ -71,7 +71,7 @@ import LoginForm from './LoginForm';
 
 function LoginFormModal() {
     const [showModal, setShowModal] = useState(false);
-
+    debugger
     return (
         <>
             <button onClick={() => setShowModal(true)}>Log In</button>

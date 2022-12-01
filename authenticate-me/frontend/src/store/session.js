@@ -43,6 +43,7 @@ export const signup = (user) => async (dispatch) => {
 };
 
 export const login = ({ credential, password }) => async dispatch => {
+    debugger
     const response = await csrfFetch("/api/session", {
         method: "POST",
         body: JSON.stringify({ 
@@ -51,6 +52,7 @@ export const login = ({ credential, password }) => async dispatch => {
         })
     });
     const data = await response.json();
+    debugger
     storeCurrentUser(data.user);
     dispatch(setCurrentUser(data.user));
     return response;
@@ -81,6 +83,7 @@ const initialState = {
 const sessionReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_CURRENT_USER:
+            debugger
             return { ...state, user: action.payload };
         case REMOVE_CURRENT_USER:
             return { ...state, user: null };
